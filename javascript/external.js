@@ -1,3 +1,2 @@
 user_name = window.prompt("Please enter your name", "Type your name here");
-document.write(user_name);
-headerElement.innerText = userInput;
+document.write "header" = (user_name);
