@@ -13,10 +13,18 @@ const wm_links = [
 ];
 const wm_paragraphs = [
   `The primary focus of this consumer-focused web mapping application is to help
-  users navigate and explore their physical surroundings.`,
+  users navigate and explore their physical surroundings.It offers geocoding and
+   proximity analysis in terms of GIS functionality within the
+app. It was designed for general use, being widely used by many people in the
+ world.`,
    `The primary focus of this government operated GIS web application is to
     provide the public with access to geospatial data and topographic
-     information.`
+     information. It offers a variety of GIS tools such as 3D elevation profile
+      analysis, buffer
+tools, and external data integration. It was designed for researchers, land
+ managers, and
+scientists but it is widely used by the public as well, such as hikers or
+ surveyors.`
 ];
 
 const webmaps = [
