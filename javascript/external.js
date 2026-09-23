@@ -19,11 +19,11 @@ const wm_paragraphs = [
       information."
 ];
 
-];
 const webmaps = [
     [wm_names[0], wm_links[0], wm_paragraphs[0]],
     [wm_names[1], wm_links[1], wm_paragraphs[1]]
 ];
+
 function welcome()
 {
 let a = "Please enter your name.";
