@@ -12,11 +12,12 @@ const wm_links = [
     "https://apps.nationalmap.gov/viewer/"
 ];
 const wm_paragraphs = [
-    "The primary focus of this consumer-focused web mapping application is to
-    help users navigate and explore their physical surroundings.",
+  "The primary focus of this consumer-focused web mapping application is to help
+   users navigate and explore their physical surroundings.",
     "The primary focus of this government operated GIS web application is to
-    provide the public with access to geospatial data and topographic
-     information."
+     provide the public with access to geospatial data and topographic
+      information."
+];
 
 ];
 const webmaps = [
