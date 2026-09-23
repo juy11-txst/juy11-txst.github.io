@@ -1,6 +1,14 @@
 // user_name = window.prompt("Please enter your name", "Type your name here");
 // var headerElement = document.querySelector("#header h1");
 // headerElement.textContent = "Hello, welcome " + user_name;
+function welcome()
+{
+let a = "Please enter your name.";
+let b = "Type your name here.";
+// A prompt box is used to prompt users to input a value before entering a page.
+user_name = window.prompt(a, b);
+message = "<h1>Hello, welcome to my webpage, " + user_name + "!</h1>"
+return message
 var webmaps =
 [
   ["Google Maps", "https://www.google.com/maps", "The primary focus of this
@@ -16,14 +24,6 @@ analysis, buffer tools, and external data integration. It was designed for
 researchers, land managers, and scientists but it is widely used by the public
 as well, such as hikers or surveyors."]
 ];
-function welcome()
-{
-let a = "Please enter your name.";
-let b = "Type your name here.";
-// A prompt box is used to prompt users to input a value before entering a page.
-user_name = window.prompt(a, b);
-message = "<h1>Hello, welcome to my webpage, " + user_name + "!</h1>"
-return message
 }
 function webmap_table()
 {
