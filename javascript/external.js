@@ -14,9 +14,8 @@ primary focus of this government operated GIS web application is to provide the
  United States. It offers a variety of GIS tools such as 3D elevation profile
  analysis, buffer tools, and external data integration. It was designed for
   researchers, land managers, and scientists but it is widely used by the public
-   as well, such as hikers or surveyors."]
+  as well, such as hikers or surveyors."]
 ];
-
 function welcome()
 {
 let a = "Please enter your name.";
