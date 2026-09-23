@@ -1,7 +1,6 @@
 // user_name = window.prompt("Please enter your name", "Type your name here");
 // var headerElement = document.querySelector("#header h1");
 // headerElement.textContent = "Hello, welcome " + user_name;
-// Webmap Data Arrays
 const wm_names = [
     "Google Maps",
     "USGS National Map Viewer"
@@ -47,7 +46,7 @@ if (row % 2 === 0) {
   } else {
   }
 document.write("<tr>");
-for (var column=0; column < webmaps[0].length; column++)
+for (var column=0; column < webmaps[row].length; column++)
 {
 document.write("<td>" + webmaps[row][column] + "</td>");
 }
