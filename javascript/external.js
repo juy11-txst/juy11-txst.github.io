@@ -43,7 +43,6 @@ function webmap_table()
   document.write("<table width=100%>");
 for (var row=0; row < webmaps.length; row++) {
 if (row % 2 === 0) {
-  } else {
   }
 document.write("<tr>");
 for (var column=0; column < webmaps[row].length; column++)
