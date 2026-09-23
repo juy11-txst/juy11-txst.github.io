@@ -3,17 +3,26 @@
 // headerElement.textContent = "Hello, welcome " + user_name;
 // Webmap Data Arrays
 const wm_names = [
-    "Oil Spill Toolkit",
-    "Texas Ecosystems Analytical Mapper"
+    "Google Maps",
+    "USGS National Map Viewer"
 ];
 
 const wm_links = [
-    "https://texas.gov",
-    "http://texas.gov"
+    "https://www.google.com/maps",
+    "https://apps.nationalmap.gov/viewer/"
 ];
 const wm_paragraphs = [
-    "The oil spill toolkit developed by Enterprise Technology Solutions is neat.",
-    "The Texas Parks and Wildlife's Landscape Ecology program is great."
+    "The primary focus of this consumer-focused web mapping application is to
+    help users navigate and explore their physical surroundings. It offers
+    geocoding and proximity analysis ini terms of GIS functionality within the
+    app. It was designed for general use, being widely used by many people in
+    the world.",
+    "The primary focus of this government operated GIS web application is to
+    provide the public with accesss to geospatial data and topographic
+    information for the U.S. It offers a variety of GIS tools such as 3D
+    elevation profile analysis, buffer tools, and external data integration. It
+    was designed for researchers, land managers, and scientists but it is widely
+    used by the public as well, such as hikers or surveyors."
 ];
 const webmaps = [
     [wm_names[0], wm_links[0], wm_paragraphs[0]],
