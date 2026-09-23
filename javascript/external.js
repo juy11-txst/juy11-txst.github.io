@@ -16,7 +16,7 @@ const wm_paragraphs = [
     help users navigate and explore their physical surroundings.",
     "The primary focus of this government operated GIS web application is to
     provide the public with access to geospatial data and topographic
-     information for the United States."
+     information."
 
 ];
 const webmaps = [
