@@ -20,11 +20,9 @@ app. It was designed for general use, being widely used by many people in the
    `The primary focus of this government operated GIS web application is to
     provide the public with access to geospatial data and topographic
      information. It offers a variety of GIS tools such as 3D elevation profile
-      analysis, buffer
-tools, and external data integration. It was designed for researchers, land
- managers, and
-scientists but it is widely used by the public as well, such as hikers or
- surveyors.`
+      analysis, buffer tools, and external data integration. It was designed for
+       researchers, land managers, and scientists but it is widely used by the
+        public as well, such as hikers or surveyors.`
 ];
 
 const webmaps = [
