@@ -68,10 +68,10 @@
       <h3>Geocoding Map</h3>
 <br>
 <div id="mapid" style="width: 600px; height: 400px; margin: auto; bottom: 30px;">
-  <script>
+<script>
   var mymap = L.map('mapid');
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(mymap);
-  var geocoder = L.controlgeocoder({
+  var geocoder = L.Control.geocoder({
     defaultMarkGeocode: false,
   }).on('markgeocode', function(e) {
     var bbox = e.geocode.bbox;
