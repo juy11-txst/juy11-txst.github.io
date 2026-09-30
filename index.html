@@ -3,17 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.1/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="">
-  <script src="https://unpkg.com/leaflet@1.9.1/dist/leaflet.js" integrity="sha256-NDI0K41gVbWqfkkaHj15IzU7PtMoelkzyKp8TOaFQ3s=" crossorigin=""></script>
-  <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css">
-  <script src="https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js"></script>
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-controlgeocoder/dist/Control.Geocoder.css" />
-  <script src="https://unpkg.com/leaflet-controlgeocoder/dist/Control.Geocoder.js"></script>
-
+  <link rel="stylesheet" href="https://unpkg.com" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="">
+  <script src="https://unpkg.com" integrity="sha256-NDI0K41gVbWqfkkaHj15IzU7PtMoelkzyKp8TOaFQ3s=" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com" />
+  <script src="https://unpkg.com"></script>
   <script src="javascript/secret_keys.js"></script>
   <title>Christopher Quiroga</title>
   <link rel="stylesheet" type="text/css" href="css/main_style.css">
+  <link rel="stylesheet" type="text/css" href="css/map_style.css">
   <style>
         #copyright {
             bottom: 20px;
@@ -41,8 +38,8 @@
       <p>
         My name is Christopher Quiroga. <br>
         I am a student in the
-        <a href="https://www.geo.txstate.edu/" target="_blank"> Geography Department</a> at
-        <a href="https://txstate.edu/" target="_blank"> Texas State University</a>.
+        <a href="https://txstate.edu" target="_blank"> Geography Department</a> at
+        <a href="https://txstate.edu" target="_blank"> Texas State University</a>.
       </p>
     </div>
     <div id="research-interests">
@@ -65,7 +62,7 @@
         var mymap = L.map('mapid');
         mymap.setView([0,0], 1);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        }).addTo(mymap);
+          maxZoom: 18,
         var geocoder = L.Control.geocoder({
           defaultMarkGeocode: false
         }).on('markgeocode', function(e) {
