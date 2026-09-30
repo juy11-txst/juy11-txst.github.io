@@ -63,6 +63,7 @@
         mymap.setView([0,0], 1);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 18,
+        }).addTo(mymap);
         var geocoder = L.Control.geocoder({
           defaultMarkGeocode: false
         }).on('markgeocode', function(e) {
