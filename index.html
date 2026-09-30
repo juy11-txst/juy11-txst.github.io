@@ -71,7 +71,7 @@
   <script>
   var mymap = L.map('mapid');
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(mymap);
-  var geocoder = L.Control.geocoder({
+  var geocoder = L.controlgeocoder({
     defaultMarkGeocode: false,
   }).on('markgeocode', function(e) {
     var bbox = e.geocode.bbox;
