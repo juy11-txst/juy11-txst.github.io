@@ -72,9 +72,9 @@
   <script>
   var mymap = L.map('mapid');
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(mymap);
-
   var geocoder = L.Control.geocoder({
     defaultMarkGeocode: false
+    geocoder: new L.controlgeocoder.Nominatim()
   }).on('markgeocode', function(e) {
     var bbox = e.geocode.bbox;
     var poly = L.polygon([
@@ -86,8 +86,8 @@
     mymap.fitBounds(poly.getBounds());
   }).addTo(mymap);
 //L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {maxZoom: 18, id: 'mapbox/streets-v10', accessToken: mapbox_access_token}).addTo(mymap);
-  var marker = L.marker([51.5, -0.09]).addTo(mymap);
-  var circle = L.circle([51.508, -0.11], { color: 'red', fillColor: '#f03',
+  //var marker = L.marker([51.5, -0.09]).addTo(mymap);
+  //var circle = L.circle([51.508, -0.11], { color: 'red', fillColor: '#f03',
 //fillOpacity: 0.5, radius: 500}).addTo(mymap);
 //var polygon = L.polygon([[51.509, -0.08], [51.503, -0.06], [51.51, -0.047]]).addTo(mymap);
 //var polyline = L.polyline([[51.506, -0.08], [51.502, -0.06], [51.507, -0.047]]).addTo(mymap);
