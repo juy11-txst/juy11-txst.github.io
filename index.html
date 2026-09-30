@@ -65,8 +65,6 @@
         var mymap = L.map('mapid');
         mymap.setView([0,0], 1);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
         }).addTo(mymap);
         var geocoder = L.Control.geocoder({
           defaultMarkGeocode: false
