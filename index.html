@@ -14,6 +14,7 @@
   <script src="javascript/secret_keys.js"></script>
   <title>Christopher Quiroga</title>
   <link rel="stylesheet" type="text/css" href="css/main_style.css">
+  <link rel="stylesheet" type="text/css" href="css/map_style.css">
   <style>
         #copyright {
             bottom: 20px;
@@ -65,8 +66,7 @@
         var mymap = L.map('mapid');
         mymap.setView([0,0], 1);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+          maxZoom: 18,
         }).addTo(mymap);
         var geocoder = L.Control.geocoder({
           defaultMarkGeocode: false
