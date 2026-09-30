@@ -75,7 +75,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 {}).addTo(mymap);
 var geocoder = L.Control.geocoder({
 defaultMarkGeocode: false,
-geocoder: new L.Control.Geocoder.Nominatim()
+geocoder: new L.Control.geocoder.Nominatim()
 }).on('markgeocode', function(e) {
 var bbox = e.geocode.bbox;
 var poly = L.polygon([
