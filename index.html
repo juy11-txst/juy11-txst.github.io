@@ -71,17 +71,17 @@
 <div id="mapid" style="width: 600px; height: 400px; margin: auto; bottom: 30px;">
 <script>
 var mymap = L.map('mapid');
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-{}).addTo(mymap);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(mymap);
 var geocoder = L.Control.geocoder({
-defaultMarkGeocode: false
+ defaultMarkGeocode: false
+ geocoder: new L.Control.Geocoder.Nominatim()
 }).on('markgeocode', function(e) {
-var bbox = e.geocode.bbox;
-var poly = L.polygon([
-bbox.getSouthEast(),
-bbox.getNorthEast(),
-bbox.getNorthWest(),
-bbox.getSouthWest()
+  var bbox = e.geocode.bbox;
+  var poly = L.polygon([
+       bbox.getSouthEast(),
+       bbox.getNorthEast(),
+       bbox.getNorthWest(),
+       bbox.getSouthWest()
 ]);
 mymap.fitBounds(poly.getBounds());
 }).addTo(mymap);
