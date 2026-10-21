@@ -5,7 +5,6 @@
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Boise Housing Query Portal & Project Hub</title>
 
-  <!-- Live ArcGIS 4.21 CSS assets and CDN mapping engines -->
   <link rel="stylesheet" href="https://arcgis.com" />
   <script src="https://arcgis.com"></script>
 
@@ -89,29 +88,27 @@
 
   <script>
     require([
-      "esri/Map",
-      "esri/views/MapView",
-      "esri/layers/TileLayer",
+      "esri/map",
+      "esri/layers/ArcGISTiledMapServiceLayer",
       "esri/layers/FeatureLayer",
       "esri/layers/GraphicsLayer",
-      "esri/rest/support/Query",
+      "esri/tasks/query",
       "dojo/dom",
       "dojo/on",
       "dojo/domReady!"
-    ], function(Map, MapView, TileLayer, FeatureLayer, GraphicsLayer, Query, dom, on) {
+    ], function(Map, ArcGISTiledMapServiceLayer, FeatureLayer, GraphicsLayer, Query, dom, on) {
 
-      // Live global World Transportation tile reference base
-      var transportationLayer = new TileLayer({
-        url: "https://arcgisonline.com"
-      });
 
-      // Polygons are symbolized with a semi-transparent gray fill by default
+      var transportationLayer = new ArcGISTiledMapServiceLayer("https://arcgisonline.com");
+
+
       var housingRenderer = {
         type: "simple",
         symbol: {
-          type: "simple-fill",
-          color: [128, 128, 128, 0.4],
-          style: "solid",
+          type: "simple-marker",
+          size: 6,
+          color: "orange",
+          style: "circle",
           outline: {
             width: 1,
             color: "white"
@@ -119,50 +116,54 @@
         }
       };
 
-      // Live REST Feature Server linking to your Boise Housing Layer (0)
-      var boiseHousingLayer = new FeatureLayer({
-        url: "https://arcgis.com",
-        renderer: housingRenderer,
+
+        mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ["*"],
-        popupTemplate: {
-          title: "County: {COUNTY}",
-          content: "<b>2018 Median Home Value:</b> ${MEDVAL_CY}<br><b>Population:</b> {POPULATION}<br><b>Square Miles:</b> {SQMI}"
+        infoTemplate: {
+          title: "County Info: ${COUNTY}",
+          content: "<b>Population (2017):</b> ${POPULATION}<br><b>Square Miles:</b> ${SQMI}"
         }
       });
+      boiseHousingLayer.setRenderer(housingRenderer);
 
-      // GraphicsLayer used to hold selected polygon boundaries
+
       var highlightLayer = new GraphicsLayer();
 
-      var map = new Map({
-        basemap: "dark-gray-vector",
-        layers: [transportationLayer, boiseHousingLayer, highlightLayer]
-      });
 
-      var view = new MapView({
-        container: "viewDiv",
-        map: map,
-        center: [-116.2023, 43.6150], // Initial view center over Boise region
+      var map = new Map("viewDiv", {
+        basemap: "dark-gray-vector",
+        center: [-116.2023, 43.6150],
         zoom: 7
       });
 
-      view.when(function() {
-        view.ui.add("navDiv", "top-right");
-        view.ui.add("optionsDiv", "bottom-right");
+      map.addLayer(transportationLayer);
+      map.addLayer(boiseHousingLayer);
+      map.addLayer(highlightLayer);
+
+
+      map.on("load", function() {
+
+        var viewContainer = dom.byId("viewDiv");
+        viewContainer.appendChild(dom.byId("navDiv"));
+        viewContainer.appendChild(dom.byId("optionsDiv"));
+
 
         on(dom.byId("doQueryBtn"), "click", executeHousingQuery);
         on(dom.byId("taskDropdown"), "change", handleNavigationChange);
       });
 
-      var selectAttribute = dom.byId("attSelect");
-      var selectExpression = dom.byId("signSelect");
-      var selectValue = dom.byId("valSelect");
-
       function executeHousingQuery() {
-        highlightLayer.removeAll();
+
+        highlightLayer.clear();
+
+        var selectAttribute = dom.byId("attSelect");
+        var selectExpression = dom.byId("signSelect");
+        var selectValue = dom.byId("valSelect");
 
         var whereClause = selectAttribute.value + " " + selectExpression.value + " " + selectValue.value;
 
-        var queryTaskParams = boiseHousingLayer.createQuery();
+
+        var queryTaskParams = new Query();
         queryTaskParams.where = whereClause;
         queryTaskParams.returnGeometry = true;
         queryTaskParams.outFields = ["*"];
@@ -170,49 +171,37 @@
         boiseHousingLayer.queryFeatures(queryTaskParams)
           .then(handleQueryResults)
           .catch(function(error) {
-            console.error("Query Execution Fault Trace: ", error);
+            console.error("Query Execution Exception Root Cause Pipeline Trace: ", error);
           });
       }
 
       function handleQueryResults(response) {
         var featuresFound = response.features;
 
-        if (featuresFound.length === 0) {
+        if (!featuresFound || featuresFound.length === 0) {
           dom.byId("printResults").innerHTML = "0 records found matching settings.";
           return;
         }
 
-        // Polygon highlight style: Vibrant cyan fill with clear borders
         var uniqueHighlightStyle = {
-          type: "simple-fill",
-          color: [0, 255, 255, 0.5],
-          style: "solid",
-          outline: {
-            width: 2,
-            color: "white"
-          }
+          type: "simple-marker",
+          size: 12,
+          color: "cyan",
+          outline: { width: 2, color: "white" }
         };
 
         featuresFound.forEach(function(feature) {
-          feature.symbol = uniqueHighlightStyle;
+          feature.setSymbol(uniqueHighlightStyle);
           highlightLayer.add(feature);
         });
 
-        // Smooth camera transition directly framing the selected polygons
-        view.goTo({
-          target: featuresFound
-        }, {
-          duration: 1500,
-          easing: "ease-in-out"
-        }).then(function() {
-          view.popup.open({
-            features: featuresFound,
-            updateLocationEnabled: true
-          });
-        });
+        if(featuresFound[0].geometry) {
+          map.centerAndZoom(featuresFound[0].geometry, 9);
+        }
 
         dom.byId("printResults").innerHTML = featuresFound.length + " matching record(s) isolated!";
       }
+
 
       function handleNavigationChange() {
         var selectedUrl = this.value;
@@ -226,10 +215,9 @@
 </head>
 <body>
 
-  <div id="viewDiv"></div>
+  <div id="viewDiv" style="position:relative;"></div>
 
-  <!-- Project Navigation Hub Overlay UI -->
-  <div class="esri-widget dashboard-panel" id="navDiv">
+  <div class="esri-widget dashboard-panel" id="navDiv" style="position: absolute; top: 20px; right: 20px; z-index: 50;">
     <h1>Lab 7 Tasks</h1>
     <p>Select an entry below to open the specific map task.</p>
     <select id="taskDropdown" class="task-select-dropdown">
@@ -243,34 +231,33 @@
     </select>
   </div>
 
-  <!-- Attribute SQL Filtering Dashboard UI -->
-  <div class="esri-widget dashboard-panel" id="optionsDiv">
-    <h2>Boise Housing Filtering</h2>
+  <div class="esri-widget dashboard-panel" id="optionsDiv" style="position: absolute; bottom: 20px; right: 20px; z-index: 50;">
+    <h2>Boise Housing Filters</h2>
+    <p>Build custom queries against target spatial data layers.</p>
 
-    <label for="attSelect">Select Field Parameter:</label>
-    <select class="query-select" id="attSelect">
-      <option value="POPULATION" selected>Population Metrics</option>
-      <option value="SQMI">Square Mileage Space</option>
-      <option value="MEDVAL_CY">Median Home Value ($)</option>
+    <label for="attSelect">Attribute Field</label>
+    <select id="attSelect" class="query-select">
+      <option value="POPULATION">Population</option>
+      <option value="SQMI">Square Miles</option>
     </select>
 
-    <label for="signSelect">Conditional Operator:</label>
-    <select class="query-select" id="signSelect">
-      <option value="&gt;">is greater than (&gt;)</option>
-      <option value="&lt;">is less than (&lt;)</option>
+    <label for="signSelect">Operator</label>
+    <select id="signSelect" class="query-select">
+      <option value=">">&gt; (Greater Than)</option>
+      <option value="<">&lt; (Less Than)</option>
+      <option value="=">= (Equals)</option>
     </select>
 
-    <label for="valSelect">Evaluation Limit:</label>
-    <select class="query-select" id="valSelect">
-      <option value="1000">1,000</option>
-      <option value="10000">10,000</option>
-      <option value="50000">50,000</option>
-      <option value="150000">150,000</option>
+    <label for="valSelect">Value Threshold</label>
+    <select id="valSelect" class="query-select">
+      <option value="100000">100,000</option>
+      <option value="500000">500,000</option>
+      <option value="25">25</option>
+      <option value="100">100</option>
     </select>
 
-    <button class="query-btn" id="doQueryBtn">Filter Map View</button>
-    <span id="printResults"></span>
+    <button id="doQueryBtn" class="query-btn">Execute Query Task</button>
+    <span id="printResults">Awaiting query configuration...</span>
   </div>
 
 </body>
-</html>
