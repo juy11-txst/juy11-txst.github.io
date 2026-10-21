@@ -5,9 +5,8 @@
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Boise Housing Query Portal & Project Hub</title>
 
-  <!-- FIX 1: Swapped out placeholders for live, valid ArcGIS 3.38 library engines -->
-  <link rel="stylesheet" href="https://arcgis.com" />
-  <script src="https://arcgis.com"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/3.38/esri/css/esri.css" />
+  <script src="https://js.arcgis.com/3.38/"></script>
 
   <style>
     html, body, #viewDiv {
@@ -15,9 +14,9 @@
       margin: 0;
       height: 100%;
       width: 100%;
+      font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
-    /* Global dashboard class matching your dimgray theme layout */
     .dashboard-panel {
       background-color: dimgray;
       color: white;
@@ -25,7 +24,6 @@
       width: 320px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       border-radius: 4px;
-      font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     .dashboard-panel h1, .dashboard-panel h2 {
@@ -78,6 +76,7 @@
       margin-top: 5px;
       display: block;
       text-align: center;
+      min-height: 18px;
     }
 
     label {
@@ -99,28 +98,28 @@
       "dojo/domReady!"
     ], function(Map, ArcGISTiledMapServiceLayer, FeatureLayer, GraphicsLayer, Query, dom, on) {
 
-      // FIX 2A: Connected the active global World Transportation legacy tiled map server
-      var transportationLayer = new ArcGISTiledMapServiceLayer("https://arcgisonline.com");
+      var BOISE_HOUSING_SERVICE_URL =
+        "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Boise_housing/FeatureServer/0";
 
-      // Set up polygon fill rendering rules (Since Boise_housing features are polygons)
+      var transportationLayer = new ArcGISTiledMapServiceLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Transportation/MapServer"
+      );
+
       var housingRenderer = {
         type: "simple",
         symbol: {
           type: "simple-fill",
-          color: [255, 165, 0, 0.4], // Semi-transparent Orange
+          color: [255, 165, 0, 0.4],
           style: "solid",
-          outline: {
-            width: 1,
-            color: "white"
-          }
+          outline: { width: 1, color: "white" }
         }
       };
 
-      // FIX 2B: Connected the active Boise Housing rest service directory path
-      var boiseHousingLayer = new FeatureLayer("https://arcgis.com", {
+      var boiseHousingLayer = new FeatureLayer(BOISE_HOUSING_SERVICE_URL, {
         mode: FeatureLayer.MODE_ONDEMAND,
         outFields: ["*"]
       });
+
       boiseHousingLayer.setRenderer(housingRenderer);
 
       var highlightLayer = new GraphicsLayer();
@@ -147,11 +146,11 @@
       function executeHousingQuery() {
         highlightLayer.clear();
 
-        var selectAttribute = dom.byId("attSelect");
-        var selectExpression = dom.byId("signSelect");
-        var selectValue = dom.byId("valSelect");
+        var attributeField = dom.byId("attSelect").value;
+        var operator = dom.byId("signSelect").value;
+        var value = dom.byId("valSelect").value;
 
-        var whereClause = selectAttribute.value + " " + selectExpression.value + " " + selectValue.value;
+        var whereClause = attributeField + " " + operator + " " + value;
 
         var queryTaskParams = new Query();
         queryTaskParams.where = whereClause;
@@ -161,31 +160,31 @@
         boiseHousingLayer.queryFeatures(queryTaskParams)
           .then(handleQueryResults)
           .catch(function(error) {
-            console.error("Query Execution Exception Root Cause Pipeline Trace: ", error);
+            console.error("Query execution error:", error);
+            dom.byId("printResults").innerHTML = "Query failed. Check service URL and field names.";
           });
       }
 
       function handleQueryResults(response) {
-        var featuresFound = response.features;
+        var featuresFound = response.features || [];
 
-        if (!featuresFound || featuresFound.length === 0) {
+        if (featuresFound.length === 0) {
           dom.byId("printResults").innerHTML = "0 records found matching settings.";
           return;
         }
 
-        var uniqueHighlightStyle = {
+        var highlightStyle = {
           type: "simple-fill",
-          color: [0, 255, 255, 0.5], // Cyan highlight
+          color: [0, 255, 255, 0.5],
           style: "solid",
           outline: { width: 2, color: "white" }
         };
 
         featuresFound.forEach(function(feature) {
-          feature.setSymbol(uniqueHighlightStyle);
+          feature.setSymbol(highlightStyle);
           highlightLayer.add(feature);
         });
 
-        // Safe legacy geometry coordinate centroid extractor
         if (featuresFound[0].geometry) {
           var targetGeom = featuresFound[0].geometry;
           if (targetGeom.type === "polygon") {
@@ -201,7 +200,7 @@
       function handleNavigationChange() {
         var selectedUrl = this.value;
         if (selectedUrl) {
-          window.open(selectedUrl, '_blank');
+          window.open(selectedUrl, "_blank");
           this.value = "";
         }
       }
@@ -209,6 +208,11 @@
   </script>
 </head>
 <body>
+
+
+  <div class="header-title-container">
+    <h1>Boise Housing Spatial Analysis Dashboard</h1>
+  </div>
 
   <div id="viewDiv"></div>
 
@@ -253,6 +257,10 @@
 
     <button id="doQueryBtn" class="query-btn">Execute Query Task</button>
     <span id="printResults">Awaiting query configuration...</span>
+  </div>
+
+  <div class="map-footer-copyright">
+    &copy; 2026 Esri, OpenData Sources | Boise Housing Dataset Compiled 2018
   </div>
 
 </body>
