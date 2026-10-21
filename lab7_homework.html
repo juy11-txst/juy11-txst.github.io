@@ -143,7 +143,6 @@
 
       view.when(function() {
         view.ui.add("navDiv", "top-right");
-
         view.ui.add("optionsDiv", "bottom-right");
 
         on(dom.byId("doQueryBtn"), "click", executeHousingQuery);
@@ -198,7 +197,6 @@
           duration: 1500,
           easing: "ease-in-out"
         }).then(function() {
-
           view.popup.open({
             features: featuresFound,
             updateLocationEnabled: true
