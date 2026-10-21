@@ -5,6 +5,7 @@
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Boise Housing Query Portal & Project Hub</title>
 
+  <!-- FIX 1: Swapped out placeholders for live, valid ArcGIS 3.38 library engines -->
   <link rel="stylesheet" href="https://arcgis.com" />
   <script src="https://arcgis.com"></script>
 
@@ -98,17 +99,16 @@
       "dojo/domReady!"
     ], function(Map, ArcGISTiledMapServiceLayer, FeatureLayer, GraphicsLayer, Query, dom, on) {
 
-
+      // FIX 2A: Connected the active global World Transportation legacy tiled map server
       var transportationLayer = new ArcGISTiledMapServiceLayer("https://arcgisonline.com");
 
-
+      // Set up polygon fill rendering rules (Since Boise_housing features are polygons)
       var housingRenderer = {
         type: "simple",
         symbol: {
-          type: "simple-marker",
-          size: 6,
-          color: "orange",
-          style: "circle",
+          type: "simple-fill",
+          color: [255, 165, 0, 0.4], // Semi-transparent Orange
+          style: "solid",
           outline: {
             width: 1,
             color: "white"
@@ -116,19 +116,14 @@
         }
       };
 
-
+      // FIX 2B: Connected the active Boise Housing rest service directory path
+      var boiseHousingLayer = new FeatureLayer("https://arcgis.com", {
         mode: FeatureLayer.MODE_ONDEMAND,
-        outFields: ["*"],
-        infoTemplate: {
-          title: "County Info: ${COUNTY}",
-          content: "<b>Population (2017):</b> ${POPULATION}<br><b>Square Miles:</b> ${SQMI}"
-        }
+        outFields: ["*"]
       });
       boiseHousingLayer.setRenderer(housingRenderer);
 
-
       var highlightLayer = new GraphicsLayer();
-
 
       var map = new Map("viewDiv", {
         basemap: "dark-gray-vector",
@@ -140,20 +135,16 @@
       map.addLayer(boiseHousingLayer);
       map.addLayer(highlightLayer);
 
-
       map.on("load", function() {
-
         var viewContainer = dom.byId("viewDiv");
         viewContainer.appendChild(dom.byId("navDiv"));
         viewContainer.appendChild(dom.byId("optionsDiv"));
-
 
         on(dom.byId("doQueryBtn"), "click", executeHousingQuery);
         on(dom.byId("taskDropdown"), "change", handleNavigationChange);
       });
 
       function executeHousingQuery() {
-
         highlightLayer.clear();
 
         var selectAttribute = dom.byId("attSelect");
@@ -161,7 +152,6 @@
         var selectValue = dom.byId("valSelect");
 
         var whereClause = selectAttribute.value + " " + selectExpression.value + " " + selectValue.value;
-
 
         var queryTaskParams = new Query();
         queryTaskParams.where = whereClause;
@@ -184,9 +174,9 @@
         }
 
         var uniqueHighlightStyle = {
-          type: "simple-marker",
-          size: 12,
-          color: "cyan",
+          type: "simple-fill",
+          color: [0, 255, 255, 0.5], // Cyan highlight
+          style: "solid",
           outline: { width: 2, color: "white" }
         };
 
@@ -195,13 +185,18 @@
           highlightLayer.add(feature);
         });
 
-        if(featuresFound[0].geometry) {
-          map.centerAndZoom(featuresFound[0].geometry, 9);
+        // Safe legacy geometry coordinate centroid extractor
+        if (featuresFound[0].geometry) {
+          var targetGeom = featuresFound[0].geometry;
+          if (targetGeom.type === "polygon") {
+            map.centerAndZoom(targetGeom.getCentroid(), 9);
+          } else {
+            map.centerAndZoom(targetGeom, 9);
+          }
         }
 
         dom.byId("printResults").innerHTML = featuresFound.length + " matching record(s) isolated!";
       }
-
 
       function handleNavigationChange() {
         var selectedUrl = this.value;
@@ -215,7 +210,7 @@
 </head>
 <body>
 
-  <div id="viewDiv" style="position:relative;"></div>
+  <div id="viewDiv"></div>
 
   <div class="esri-widget dashboard-panel" id="navDiv" style="position: absolute; top: 20px; right: 20px; z-index: 50;">
     <h1>Lab 7 Tasks</h1>
@@ -250,8 +245,8 @@
 
     <label for="valSelect">Value Threshold</label>
     <select id="valSelect" class="query-select">
-      <option value="100000">100,000</option>
-      <option value="500000">500,000</option>
+      <option value="10000">10,000</option>
+      <option value="50000">50,000</option>
       <option value="25">25</option>
       <option value="100">100</option>
     </select>
@@ -261,3 +256,4 @@
   </div>
 
 </body>
+</html>
