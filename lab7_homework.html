@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 7 HW</title>
+  <link rel="stylesheet" href="https://arcgis.com" />
+
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #f3f3f3;
+      font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Styled wrapper container following your dimgray widget layout */
+    .dashboard-panel {
+      background-color: dimgray;
+      color: white;
+      padding: 24px;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 10px 0;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 14px;
+      color: #dfdfdf;
+      margin: 0 0 20px 0;
+    }
+
+    /* Custom select element mirroring the esri-select UI styles */
+    .task-select-dropdown {
+      cursor: pointer;
+      display: block;
+      font-size: 14px;
+      width: 100%;
+      height: 36px;
+      color: #323232;
+      border: 1px solid rgba(110, 110, 110, 0.3);
+      border-radius: 2px;
+      padding: 0 10px;
+      margin: 0;
+      background: #fff;
+    }
+
+    .task-select-dropdown:focus {
+      outline: 2px solid #007ac2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-panel">
+    <h1>Lab 7 Tasks</h1>
+    <p>Select an entry below to open the specific map task.</p>
+
+    <select id="taskDropdown" class="task-select-dropdown">
+      <option value="" selected disabled>-- Select a Map Task --</option>
+      <option value="simple_mapping.html">Task 1</option>
+      <option value="tile_layer.html">Task 2</option>
+      <option value="dynamic_layers.html">Task 3</option>
+      <option value="on_event.html">Task 4</option>
+      <option value="basemap_gallery.html">Task 5</option>
+      <option value="query_task.html">Task 6</option>
+    </select>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var dropdown = document.getElementById("taskDropdown");
+
+      dropdown.addEventListener("change", function() {
+        var selectedUrl = this.value;
+
+        if (selectedUrl) {
+          window.open(selectedUrl, '_blank');
+
+          this.value = "";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
