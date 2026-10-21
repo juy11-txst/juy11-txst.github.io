@@ -5,7 +5,8 @@
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Boise Housing Query Portal & Project Hub</title>
 
-    <link rel="stylesheet" href="https://arcgis.com" />
+  <!-- Live ArcGIS 4.21 CSS assets and CDN mapping engines -->
+  <link rel="stylesheet" href="https://arcgis.com" />
   <script src="https://arcgis.com"></script>
 
   <style>
@@ -99,18 +100,18 @@
       "dojo/domReady!"
     ], function(Map, MapView, TileLayer, FeatureLayer, GraphicsLayer, Query, dom, on) {
 
-
+      // Live global World Transportation tile reference base
       var transportationLayer = new TileLayer({
         url: "https://arcgisonline.com"
       });
 
+      // Polygons are symbolized with a semi-transparent gray fill by default
       var housingRenderer = {
         type: "simple",
         symbol: {
-          type: "simple-marker",
-          size: 6,
-          color: "orange",
-          style: "circle",
+          type: "simple-fill",
+          color: [128, 128, 128, 0.4],
+          style: "solid",
           outline: {
             width: 1,
             color: "white"
@@ -118,17 +119,18 @@
         }
       };
 
-
+      // Live REST Feature Server linking to your Boise Housing Layer (0)
       var boiseHousingLayer = new FeatureLayer({
         url: "https://arcgis.com",
         renderer: housingRenderer,
         outFields: ["*"],
         popupTemplate: {
-          title: "County Info: {COUNTY}",
-          content: "<b>Population (2017):</b> {POPULATION}<br><b>Square Miles:</b> {SQMI}"
+          title: "County: {COUNTY}",
+          content: "<b>2018 Median Home Value:</b> ${MEDVAL_CY}<br><b>Population:</b> {POPULATION}<br><b>Square Miles:</b> {SQMI}"
         }
       });
 
+      // GraphicsLayer used to hold selected polygon boundaries
       var highlightLayer = new GraphicsLayer();
 
       var map = new Map({
@@ -139,7 +141,7 @@
       var view = new MapView({
         container: "viewDiv",
         map: map,
-        center: [-116.2023, 43.6150],
+        center: [-116.2023, 43.6150], // Initial view center over Boise region
         zoom: 7
       });
 
@@ -168,7 +170,7 @@
         boiseHousingLayer.queryFeatures(queryTaskParams)
           .then(handleQueryResults)
           .catch(function(error) {
-            console.error("Query Execution Exception Root Cause Pipeline Trace: ", error);
+            console.error("Query Execution Fault Trace: ", error);
           });
       }
 
@@ -180,11 +182,15 @@
           return;
         }
 
+        // Polygon highlight style: Vibrant cyan fill with clear borders
         var uniqueHighlightStyle = {
-          type: "simple-marker",
-          size: 12,
-          color: "cyan",
-          outline: { width: 2, color: "white" }
+          type: "simple-fill",
+          color: [0, 255, 255, 0.5],
+          style: "solid",
+          outline: {
+            width: 2,
+            color: "white"
+          }
         };
 
         featuresFound.forEach(function(feature) {
@@ -192,9 +198,9 @@
           highlightLayer.add(feature);
         });
 
+        // Smooth camera transition directly framing the selected polygons
         view.goTo({
-          target: featuresFound,
-          zoom: 9
+          target: featuresFound
         }, {
           duration: 1500,
           easing: "ease-in-out"
@@ -208,7 +214,6 @@
         dom.byId("printResults").innerHTML = featuresFound.length + " matching record(s) isolated!";
       }
 
-      // External Routing Script Event to clear index views and transition to secondary labs in separate tabs
       function handleNavigationChange() {
         var selectedUrl = this.value;
         if (selectedUrl) {
@@ -223,6 +228,7 @@
 
   <div id="viewDiv"></div>
 
+  <!-- Project Navigation Hub Overlay UI -->
   <div class="esri-widget dashboard-panel" id="navDiv">
     <h1>Lab 7 Tasks</h1>
     <p>Select an entry below to open the specific map task.</p>
@@ -237,6 +243,7 @@
     </select>
   </div>
 
+  <!-- Attribute SQL Filtering Dashboard UI -->
   <div class="esri-widget dashboard-panel" id="optionsDiv">
     <h2>Boise Housing Filtering</h2>
 
@@ -244,6 +251,7 @@
     <select class="query-select" id="attSelect">
       <option value="POPULATION" selected>Population Metrics</option>
       <option value="SQMI">Square Mileage Space</option>
+      <option value="MEDVAL_CY">Median Home Value ($)</option>
     </select>
 
     <label for="signSelect">Conditional Operator:</label>
@@ -256,8 +264,8 @@
     <select class="query-select" id="valSelect">
       <option value="1000">1,000</option>
       <option value="10000">10,000</option>
-      <option value="25000">25,000</option>
       <option value="50000">50,000</option>
+      <option value="150000">150,000</option>
     </select>
 
     <button class="query-btn" id="doQueryBtn">Filter Map View</button>
